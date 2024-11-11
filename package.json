@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
+    "docker:up": "docker compose -f ./infra/compose.yaml up --force-recreate",
+    "docker:down": "docker compose -f ./infra/compose.yaml down",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
     "test": "jest",
