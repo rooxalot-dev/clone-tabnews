@@ -1,11 +1,16 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 
-export const status: NextApiHandler = (
+import database from "@infra/database/postgres";
+
+export const status: NextApiHandler = async (
   request: NextApiRequest,
   response: NextApiResponse,
 ) => {
+  const result = await database.query("SELECT 1 + 1 as result;");
+
   response.status(200).json({
-    chave: "Os alunos do curso.dev são acima da média!",
+    api: 200,
+    database: result ? 200 : 500,
   });
 };
 

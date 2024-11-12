@@ -4,5 +4,5 @@ services:
     container_name: retabnews_database
     ports:
       - 5432:5432
-    environment:
-      - POSTGRES_PASSWORD=retabnews
+    env_file:
+      - ../.env
