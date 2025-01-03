@@ -1,12 +1,12 @@
-import { Client } from "pg";
+import { Pool, PoolClient } from "pg";
 
-import IDatabase from "..";
+import { IDatabase } from "../IDatabase";
 
 export class PostgresDatabase implements IDatabase {
-  client: Client;
+  pool: Pool;
 
   constructor() {
-    this.client = new Client({
+    this.pool = new Pool({
       host: process.env.POSTGRES_HOST,
       port: parseInt(process.env.POSTGRES_PORT ?? "0"),
       database: process.env.POSTGRES_DB,
@@ -16,14 +16,16 @@ export class PostgresDatabase implements IDatabase {
   }
 
   async query<T>(query: string, params?: []): Promise<T[]> {
+    let poolClient: PoolClient | null = null;
+
     try {
-      await this.client.connect();
-      const result = await this.client.query<T>(query, params);
+      poolClient = await this.pool.connect();
+      const result = await poolClient.query<T>(query, params);
       return result.rows;
     } catch (error) {
       throw new Error(`Error querying the database: ${error}`);
     } finally {
-      this.client.end();
+      await poolClient?.release();
     }
   }
 }

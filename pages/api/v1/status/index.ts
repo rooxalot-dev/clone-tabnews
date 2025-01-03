@@ -1,6 +1,6 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 
-import database from "@infra/database/postgres";
+import database from "@infra/database/postgres/PostgresDatabase";
 
 export const status: NextApiHandler = async (
   request: NextApiRequest,
