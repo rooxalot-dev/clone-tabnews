@@ -1,6 +1,7 @@
 import { Pool, PoolClient } from "pg";
 
 import { IDatabase } from "../IDatabase";
+import DbMetadata from "../DbMetadata";
 
 export class PostgresDatabase implements IDatabase {
   pool: Pool;
@@ -15,7 +16,7 @@ export class PostgresDatabase implements IDatabase {
     });
   }
 
-  async query<T>(query: string, params?: []): Promise<T[]> {
+  async query<T>(query: string, params?: any[]): Promise<T[]> {
     let poolClient: PoolClient | null = null;
 
     try {
@@ -25,8 +26,27 @@ export class PostgresDatabase implements IDatabase {
     } catch (error) {
       throw new Error(`Error querying the database: ${error}`);
     } finally {
-      await poolClient?.release();
+      poolClient?.release();
     }
+  }
+
+  async getMetadata(): Promise<DbMetadata> {
+    const responses = await Promise.all([
+      this.query<any>('SHOW server_version'),
+      this.query<any>('SHOW max_connections'),
+      this.query<any>(`SELECT COUNT(*) FROM pg_stat_activity WHERE datname = $1 and state = 'active'`, [process.env.POSTGRES_DB]),
+    ]);
+
+    const [
+      [version],
+      [maxConnections],
+      [usedConnections],
+    ] = responses;
+
+    return new DbMetadata(
+      parseFloat(version.server_version),
+      parseInt(maxConnections.max_connections),
+      parseInt(usedConnections.count));
   }
 }
 
