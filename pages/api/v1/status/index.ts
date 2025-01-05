@@ -6,11 +6,18 @@ export const status: NextApiHandler = async (
   request: NextApiRequest,
   response: NextApiResponse,
 ) => {
-  const result = await database.query("SELECT 1 + 1 as result;");
+  const updatedAt = new Date().toISOString();
+  const dbMetadata = await database.getMetadata();
 
   response.status(200).json({
-    api: 200,
-    database: result ? 200 : 500,
+    updated_at: updatedAt,
+    dependencies: {
+      database: {
+        version: dbMetadata.version,
+        max_connections: dbMetadata.maxConnections,
+        used_connections: dbMetadata.usedConnections,
+      },
+    },
   });
 };
 
