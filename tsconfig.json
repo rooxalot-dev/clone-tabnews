@@ -3,8 +3,9 @@
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext",
-      "ES5"
+      "ES5",
+      "ESNext",
+      "esnext"
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -13,8 +14,10 @@
     "noEmit": true,
     "incremental": true,
     "esModuleInterop": true,
+    "target": "ES6",
+    // Use commonjs instead of esm when compiling the migration files
     "module": "CommonJS",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -37,7 +40,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "tsconfig.migrations.json"  ],
   "exclude": [
     "node_modules"
   ]

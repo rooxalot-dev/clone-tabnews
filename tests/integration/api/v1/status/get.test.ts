@@ -5,8 +5,6 @@ describe("ap1/v1/status - get", () => {
     const response = await fetch(apiUrl, { method: "GET" });
     const responseBody = await response.json();
 
-    console.log('status response body', responseBody);
-
     expect(response.status).toBe(200);
 
     expect(responseBody.updated_at).toBeDefined();
